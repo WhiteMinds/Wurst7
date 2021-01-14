@@ -7,8 +7,6 @@
  */
 package net.wurstclient.hacks;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -18,10 +16,12 @@ import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
+import net.wurstclient.WurstClient;
 import net.wurstclient.events.PacketInputListener;
 import net.wurstclient.events.RenderListener;
 import net.wurstclient.events.UpdateListener;
@@ -31,6 +31,9 @@ import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.util.ChatUtils;
 import net.wurstclient.util.RenderUtils;
+import org.lwjgl.opengl.GL11;
+
+import java.util.Random;
 
 @SearchTags({"FishBot", "auto fish", "fish bot", "fishing"})
 public final class AutoFishHack extends Hack
@@ -48,7 +51,11 @@ public final class AutoFishHack extends Hack
 			+ "they will be detected. Useful for optimizing\n"
 			+ "your 'Valid range' setting.",
 		false);
-	
+
+		
+	private final CheckboxSetting antiOverfish = new CheckboxSetting("反过度捕捞", false);
+	private final SliderSetting minThrowRange = new SliderSetting("MinThrowRange", "", 3, 1, 20, 1, ValueDisplay.INTEGER);
+
 	private int bestRodValue;
 	private int bestRodSlot;
 	
@@ -61,6 +68,8 @@ public final class AutoFishHack extends Hack
 	private int scheduledWindowClick;
 	private Vec3d lastSoundPos;
 	
+	private Random random = new Random();
+	
 	public AutoFishHack()
 	{
 		super("AutoFish", "Automatically catches fish using your\n"
@@ -70,6 +79,8 @@ public final class AutoFishHack extends Hack
 		setCategory(Category.OTHER);
 		addSetting(validRange);
 		addSetting(debugDraw);
+		addSetting(antiOverfish);
+		addSetting(minThrowRange);
 	}
 	
 	@Override
@@ -155,6 +166,33 @@ public final class AutoFishHack extends Hack
 		// cast rod
 		if(player.fishHook == null)
 		{
+			if (antiOverfish.isChecked()) {
+				// 随机改变朝向和上下角度
+				BlockPos pos = new BlockPos(WurstClient.MC.player.getPos()).down();
+				int dir = random.nextInt(4);
+				int distance = minThrowRange.getValueI() + random.nextInt(10);
+				BlockPos targetPos;
+				switch(dir) {
+					case 0:
+						targetPos = pos.east(distance);
+						break;
+					case 1:
+						targetPos = pos.south(distance);
+						break;
+					case 2:
+						targetPos = pos.west(distance);
+						break;
+					case 3:
+						targetPos = pos.north(distance);
+						break;
+					default:
+						targetPos = pos;
+						break;
+				}
+				// facePos
+				WURST.getRotationFaker().faceVectorClient(Vec3d.ofCenter(targetPos));
+			}
+
 			rightClick();
 			castRodTimer = 15;
 			reelInTimer = 1200;
