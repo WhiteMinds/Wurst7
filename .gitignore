@@ -17,6 +17,7 @@ logs/
 
 .settings/
 .vscode/
+.history/
 bin/
 .classpath
 .project
