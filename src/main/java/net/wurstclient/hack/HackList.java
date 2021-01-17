@@ -26,8 +26,9 @@ import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hacks.*;
 import net.wurstclient.util.json.JsonException;
 
-public final class HackList implements UpdateListener
-{
+public final class HackList implements UpdateListener {
+	public final AutoWoodcutterHack autoWoodcutterHack = new AutoWoodcutterHack();
+
 	public final AntiAfkHack antiAfkHack = new AntiAfkHack();
 	public final AntiBlindHack antiBlindHack = new AntiBlindHack();
 	public final AntiCactusHack antiCactusHack = new AntiCactusHack();
@@ -65,8 +66,7 @@ public final class HackList implements UpdateListener
 	public final BunnyHopHack bunnyHopHack = new BunnyHopHack();
 	public final CameraNoClipHack cameraNoClipHack = new CameraNoClipHack();
 	public final CaveFinderHack caveFinderHack = new CaveFinderHack();
-	public final ChatTranslatorHack chatTranslatorHack =
-		new ChatTranslatorHack();
+	public final ChatTranslatorHack chatTranslatorHack = new ChatTranslatorHack();
 	public final ChestEspHack chestEspHack = new ChestEspHack();
 	public final ClickAuraHack clickAuraHack = new ClickAuraHack();
 	public final ClickGuiHack clickGuiHack = new ClickGuiHack();
@@ -158,92 +158,74 @@ public final class HackList implements UpdateListener
 	public final TrueSightHack trueSightHack = new TrueSightHack();
 	public final TunnellerHack tunnellerHack = new TunnellerHack();
 	public final XRayHack xRayHack = new XRayHack();
-	
-	private final TreeMap<String, Hack> hax =
-		new TreeMap<>((o1, o2) -> o1.compareToIgnoreCase(o2));
-	
+
+	private final TreeMap<String, Hack> hax = new TreeMap<>((o1, o2) -> o1.compareToIgnoreCase(o2));
+
 	private final EnabledHacksFile enabledHacksFile;
-	private final Path profilesFolder =
-		WurstClient.INSTANCE.getWurstFolder().resolve("enabled hacks");
-	
-	private final EventManager eventManager =
-		WurstClient.INSTANCE.getEventManager();
-	
-	public HackList(Path enabledHacksFile)
-	{
+	private final Path profilesFolder = WurstClient.INSTANCE.getWurstFolder().resolve("enabled hacks");
+
+	private final EventManager eventManager = WurstClient.INSTANCE.getEventManager();
+
+	public HackList(Path enabledHacksFile) {
 		this.enabledHacksFile = new EnabledHacksFile(enabledHacksFile);
-		
-		try
-		{
-			for(Field field : HackList.class.getDeclaredFields())
-			{
-				if(!field.getName().endsWith("Hack"))
+
+		try {
+			for (Field field : HackList.class.getDeclaredFields()) {
+				if (!field.getName().endsWith("Hack"))
 					continue;
-				
-				Hack hack = (Hack)field.get(this);
+
+				Hack hack = (Hack) field.get(this);
 				hax.put(hack.getName(), hack);
 			}
-			
-		}catch(Exception e)
-		{
+
+		} catch (Exception e) {
 			String message = "Initializing Wurst hacks";
 			CrashReport report = CrashReport.create(e, message);
 			throw new CrashException(report);
 		}
-		
+
 		eventManager.add(UpdateListener.class, this);
 	}
-	
+
 	@Override
-	public void onUpdate()
-	{
+	public void onUpdate() {
 		enabledHacksFile.load(this);
 		eventManager.remove(UpdateListener.class, this);
 	}
-	
-	public void saveEnabledHax()
-	{
+
+	public void saveEnabledHax() {
 		enabledHacksFile.save(this);
 	}
-	
-	public Hack getHackByName(String name)
-	{
+
+	public Hack getHackByName(String name) {
 		return hax.get(name);
 	}
-	
-	public Collection<Hack> getAllHax()
-	{
+
+	public Collection<Hack> getAllHax() {
 		return Collections.unmodifiableCollection(hax.values());
 	}
-	
-	public int countHax()
-	{
+
+	public int countHax() {
 		return hax.size();
 	}
-	
-	public ArrayList<Path> listProfiles()
-	{
-		if(!Files.isDirectory(profilesFolder))
+
+	public ArrayList<Path> listProfiles() {
+		if (!Files.isDirectory(profilesFolder))
 			return new ArrayList<>();
-		
-		try(Stream<Path> files = Files.list(profilesFolder))
-		{
-			return files.filter(Files::isRegularFile)
-				.collect(Collectors.toCollection(() -> new ArrayList<>()));
-			
-		}catch(IOException e)
-		{
+
+		try (Stream<Path> files = Files.list(profilesFolder)) {
+			return files.filter(Files::isRegularFile).collect(Collectors.toCollection(() -> new ArrayList<>()));
+
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	public void loadProfile(String fileName) throws IOException, JsonException
-	{
+
+	public void loadProfile(String fileName) throws IOException, JsonException {
 		enabledHacksFile.loadProfile(this, profilesFolder.resolve(fileName));
 	}
-	
-	public void saveProfile(String fileName) throws IOException, JsonException
-	{
+
+	public void saveProfile(String fileName) throws IOException, JsonException {
 		enabledHacksFile.saveProfile(this, profilesFolder.resolve(fileName));
 	}
 }
