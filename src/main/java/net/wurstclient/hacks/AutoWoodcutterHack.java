@@ -118,7 +118,7 @@ public final class AutoWoodcutterHack extends Hack implements UpdateListener, Re
     double rangeSq = Math.pow(range.getValue(), 2);
     int blockRange = (int) Math.ceil(range.getValue());
 
-    List<BlockPos> blocks = getBlockStream(eyesBlock, blockRange)
+    List<BlockPos> blocks = getBlockStream(eyesBlock.down(), blockRange)
         .filter(pos -> eyesVec.squaredDistanceTo(Vec3d.of(pos)) <= rangeSq).filter(pos -> BlockUtils.canBeClicked(pos))
         .collect(Collectors.toList());
 
@@ -132,7 +132,7 @@ public final class AutoWoodcutterHack extends Hack implements UpdateListener, Re
           .sorted(Comparator.comparingDouble(pos -> eyesVec.squaredDistanceTo(Vec3d.of(pos))))
           .collect(Collectors.toList());
 
-      blocksToReplant = getBlockStream(eyesBlock, blockRange)
+      blocksToReplant = getBlockStream(eyesBlock.down(), blockRange)
           .filter(pos -> eyesVec.squaredDistanceTo(Vec3d.of(pos)) <= rangeSq)
           .filter(pos -> BlockUtils.getState(pos).getMaterial().isReplaceable()).filter(pos -> plants.containsKey(pos))
           .filter(this::canBeReplanted)
@@ -241,14 +241,13 @@ public final class AutoWoodcutterHack extends Hack implements UpdateListener, Re
         .collect(Collectors.toMap(pos -> pos, pos -> seeds.get(BlockUtils.getBlock(pos)))));
     plants.putAll(blocks.parallelStream()
         .filter(pos -> BlockUtils.getBlock(pos) == Blocks.DIRT && BlockUtils.getBlock(pos.up()) == Blocks.AIR)
-        .map(pos -> pos.up())
-        .collect(Collectors.toMap(pos -> pos, pos -> Items.OAK_SAPLING)));
+        .map(pos -> pos.up()).collect(Collectors.toMap(pos -> pos, pos -> Items.OAK_SAPLING)));
   }
 
   private boolean canBeReplanted(BlockPos pos) {
     if (BlockUtils.getBlock(pos.down()) == Blocks.DIRT) {
       if (!blockCooldownMap.containsKey(getBlockKey(pos)))
-    	  return true;
+        return true;
       long time = blockCooldownMap.get(getBlockKey(pos));
       return new Date().getTime() - time >= 65e3;
     }
