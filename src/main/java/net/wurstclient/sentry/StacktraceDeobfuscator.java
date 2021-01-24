@@ -111,7 +111,7 @@ public final class StacktraceDeobfuscator
 			return;
 		}
 		
-		try(FileSystem jar = FileSystems.newFileSystem(jarFile.toPath(), null))
+		try(FileSystem jar = FileSystems.newFileSystem(jarFile.toPath(), (java.lang.ClassLoader)null))
 		{
 			NotEnoughCrashes.ensureDirectoryExists();
 			Files.copy(jar.getPath(MAPPINGS_JAR_LOCATION), CACHED_MAPPINGS,

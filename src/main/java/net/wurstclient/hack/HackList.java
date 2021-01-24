@@ -30,6 +30,7 @@ public final class HackList implements UpdateListener {
 	public final AutoWoodcutterHack autoWoodcutterHack = new AutoWoodcutterHack();
 	public final AutoCondenseHack autoCondense2Hack = new AutoCondenseHack();
 	public final AutoFixHack autoFixHack = new AutoFixHack();
+	public final AutoCraftPackedItemHack autoCraftPackedItemHack = new AutoCraftPackedItemHack();
 
 	public final AntiAfkHack antiAfkHack = new AntiAfkHack();
 	public final AntiBlindHack antiBlindHack = new AntiBlindHack();
