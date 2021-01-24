@@ -106,6 +106,12 @@ public abstract class ClientPlayerInteractionManagerMixin
 	{
 		return clickSlot(0, slot, 0, SlotActionType.QUICK_MOVE, client.player);
 	}
+
+	@Override
+	public ItemStack windowClick_SWAP(int slot, int slot2) {
+		clickSlot(0, slot2, 0, SlotActionType.SWAP, client.player);
+		return clickSlot(0, slot, 0, SlotActionType.SWAP, client.player);
+	}
 	
 	@Override
 	public ItemStack windowClick_THROW(int slot)

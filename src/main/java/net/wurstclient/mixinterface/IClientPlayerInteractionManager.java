@@ -22,6 +22,8 @@ public interface IClientPlayerInteractionManager
 	public ItemStack windowClick_PICKUP(int slot);
 	
 	public ItemStack windowClick_QUICK_MOVE(int slot);
+
+	public ItemStack windowClick_SWAP(int slot, int slot2);
 	
 	public ItemStack windowClick_THROW(int slot);
 	
