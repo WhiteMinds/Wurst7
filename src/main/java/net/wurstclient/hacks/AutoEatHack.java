@@ -29,6 +29,7 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
+import net.wurstclient.WurstClient;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.CheckboxSetting;
@@ -61,8 +62,12 @@ public final class AutoEatHack extends Hack implements UpdateListener
 			"Eating chorus fruit teleports you to a random location.\n"
 				+ "Not recommended.",
 			false);
+			
+	private final CheckboxSetting eatWithBaritone = new CheckboxSetting(
+		"eatWithBaritone", "pause & resume", false);
 	
 	private int oldSlot = -1;
+	private boolean paused = false;
 	
 	public AutoEatHack()
 	{
@@ -73,6 +78,7 @@ public final class AutoEatHack extends Hack implements UpdateListener
 		addSetting(allowHunger);
 		addSetting(allowPoison);
 		addSetting(allowChorus);
+		addSetting(eatWithBaritone);
 	}
 	
 	@Override
@@ -110,6 +116,11 @@ public final class AutoEatHack extends Hack implements UpdateListener
 		
 		// set slot
 		MC.player.inventory.selectedSlot = bestSlot;
+
+		if (eatWithBaritone.isChecked() && !paused) {
+			WurstClient.MC.player.sendChatMessage("#pause");
+			paused = true;
+		}
 		
 		// eat food
 		MC.options.keyUse.setPressed(true);
@@ -215,6 +226,11 @@ public final class AutoEatHack extends Hack implements UpdateListener
 	
 	private void stopIfEating()
 	{
+		if (eatWithBaritone.isChecked() && paused) {
+			WurstClient.MC.player.sendChatMessage("#resume");
+			paused = false;
+		}
+
 		if(!isEating())
 			return;
 		
