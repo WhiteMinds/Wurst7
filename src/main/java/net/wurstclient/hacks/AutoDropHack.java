@@ -17,6 +17,8 @@ import net.wurstclient.SearchTags;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.ItemListSetting;
+import net.wurstclient.settings.SliderSetting;
+import net.wurstclient.settings.SliderSetting.ValueDisplay;
 
 @SearchTags({"auto drop", "AutoEject", "auto-eject", "auto eject",
 	"InventoryCleaner", "inventory cleaner", "InvCleaner", "inv cleaner"})
@@ -31,6 +33,9 @@ public final class AutoDropHack extends Hack implements UpdateListener
 		"minecraft:poisonous_potato", "minecraft:poppy", "minecraft:red_tulip",
 		"minecraft:rose_bush", "minecraft:rotten_flesh", "minecraft:sunflower",
 		"minecraft:wheat_seeds", "minecraft:white_tulip");
+		
+	private final SliderSetting keepSlots = new SliderSetting("keep slots", "", 0, 0, 27, 1,
+			ValueDisplay.INTEGER);
 	
 	private final String renderName =
 		Math.random() < 0.01 ? "AutoLinus" : getName();
@@ -40,6 +45,7 @@ public final class AutoDropHack extends Hack implements UpdateListener
 		super("AutoDrop", "Automatically drops unwanted items.");
 		setCategory(Category.ITEMS);
 		addSetting(items);
+		addSetting(keepSlots);
 	}
 	
 	@Override
@@ -68,7 +74,7 @@ public final class AutoDropHack extends Hack implements UpdateListener
 			&& !(MC.currentScreen instanceof InventoryScreen))
 			return;
 		
-		for(int slot = 9; slot < 45; slot++)
+		for(int slot = 9; slot < 45 - keepSlots.getValueI(); slot++)
 		{
 			int adjustedSlot = slot;
 			if(adjustedSlot >= 36)
