@@ -35,5 +35,6 @@ public final class AutoCraftPackedItemHack extends Hack {
 
   @Override
   protected void onDisable() {
+	  heldItem = null;
   }
 }

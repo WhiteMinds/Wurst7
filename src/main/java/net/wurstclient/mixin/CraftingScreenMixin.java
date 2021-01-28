@@ -47,8 +47,10 @@ public abstract class CraftingScreenMixin
 		if(!WurstClient.INSTANCE.isEnabled())
 			return;
 
-		addButton(new ButtonWidget(x + backgroundWidth - 56, y + 4, 50, 12,
-			new LiteralText("Pack"), b -> startAutoCraftPacked()));
+		if (autoCraftPackedItemHack.heldItem != null) {
+			addButton(new ButtonWidget(x + backgroundWidth - 56, y + 4, 50, 12,
+					new LiteralText("Pack " + autoCraftPackedItemHack.heldItem.getName().getString()), b -> startAutoCraftPacked()));
+		}
 	}
 	
 	private void startAutoCraftPacked()
@@ -86,13 +88,12 @@ public abstract class CraftingScreenMixin
 			if (stack.isEmpty())
 				continue;
 
-			if (stack.getItem().equals(autoCraftPackedItemHack.heldItem.getItem()) && lackCount > 0) {
+			if (ItemStack.areEqual(stack, autoCraftPackedItemHack.heldItem) && lackCount > 0) {
 				lackCount--;
 			} else {
 				// 移除
+				// TODO: 如果 lackCount > 0，将换入目标物品，使用 SWAP 之类的
 				onMouseClick(slot, slot.id, 0, SlotActionType.QUICK_MOVE);
-				// TODO: 如果 lackCount > 0，将换入目标物品
-				// IMC.getInteractionManager().windowClick_SWAP(slot.id);
 				waitForDelay(getDelay());
 			}
 		}
@@ -106,7 +107,7 @@ public abstract class CraftingScreenMixin
 			if (stack.isEmpty())
 				continue;
 
-			if (!stack.getItem().equals(autoCraftPackedItemHack.heldItem.getItem()))
+			if (!ItemStack.areEqual(stack, autoCraftPackedItemHack.heldItem))
 				continue;
 
 			onMouseClick(slot, slot.id, 0, SlotActionType.QUICK_MOVE);
@@ -118,6 +119,7 @@ public abstract class CraftingScreenMixin
 		
 		Slot resultSlot = handler.getSlot(resultSlotIdx);
 		if (lackCount <= 0 && !resultSlot.getStack().isEmpty()) {
+			waitForDelay(500);
 			onMouseClick(resultSlot, resultSlot.id, 0, SlotActionType.QUICK_MOVE);
 			
 			waitForDelay(500);
