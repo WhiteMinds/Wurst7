@@ -17,13 +17,12 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 
 @SearchTags({ "auto sell", "AutoSell" })
 public final class AutoSellHack extends Hack implements UpdateListener {
-	private final SliderSetting intervalSec = new SliderSetting("interval seconds", "", 60, 1, 360, 1,
-			ValueDisplay.INTEGER);
+	private final SliderSetting intervalSec = new SliderSetting("调用间隔（秒）", "", 60, 1, 360, 1, ValueDisplay.INTEGER);
 
 	private int cooldown = 0;
 
 	public AutoSellHack() {
-		super("AutoSellHack", "AutoSellHack");
+		super("自动出售", "自动调用 /sell all");
 
 		setCategory(Category.CHAT);
 		addSetting(intervalSec);

@@ -17,13 +17,12 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 
 @SearchTags({ "auto condense", "AutoCondense" })
 public final class AutoCondenseHack extends Hack implements UpdateListener {
-	private final SliderSetting intervalSec = new SliderSetting("interval seconds", "", 60, 1, 360, 1,
-			ValueDisplay.INTEGER);
+	private final SliderSetting intervalSec = new SliderSetting("调用间隔（秒）", "", 60, 1, 360, 1, ValueDisplay.INTEGER);
 
 	private int cooldown = 0;
 
 	public AutoCondenseHack() {
-		super("AutoCondense", "AutoCondense");
+		super("自动 Condense", "自动调用 /condense");
 
 		setCategory(Category.CHAT);
 		addSetting(intervalSec);

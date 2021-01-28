@@ -53,8 +53,8 @@ public final class AutoFishHack extends Hack
 		false);
 
 		
-	private final CheckboxSetting antiOverfish = new CheckboxSetting("反过度捕捞", false);
-	private final SliderSetting minThrowRange = new SliderSetting("MinThrowRange", "", 3, 1, 20, 1, ValueDisplay.INTEGER);
+	private final CheckboxSetting antiOverfish = new CheckboxSetting("反过度捕捞", "每次抛杆后随机改变角色朝向", false);
+	private final SliderSetting minThrowRange = new SliderSetting("反过度捕捞-最小投掷距离", "", 3, 1, 20, 1, ValueDisplay.INTEGER);
 
 	private int bestRodValue;
 	private int bestRodSlot;
@@ -72,9 +72,7 @@ public final class AutoFishHack extends Hack
 	
 	public AutoFishHack()
 	{
-		super("AutoFish", "Automatically catches fish using your\n"
-			+ "best fishing rod. If it finds a better\n"
-			+ "rod while fishing, it will automatically\n" + "switch to it.");
+		super("自动钓鱼", "会自动使用最好的鱼竿");
 		
 		setCategory(Category.OTHER);
 		addSetting(validRange);

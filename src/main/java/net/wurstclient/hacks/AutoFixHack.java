@@ -17,13 +17,12 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 
 @SearchTags({ "auto fix", "AutoFix" })
 public final class AutoFixHack extends Hack implements UpdateListener {
-	private final SliderSetting intervalSec = new SliderSetting("interval seconds", "", 60, 1, 360, 1,
-			ValueDisplay.INTEGER);
+	private final SliderSetting intervalSec = new SliderSetting("调用间隔（秒）", "", 60, 1, 360, 1, ValueDisplay.INTEGER);
 
 	private int cooldown = 0;
 
 	public AutoFixHack() {
-		super("AutoFixHack", "AutoFixHack");
+		super("自动修复", "自动调用 /fix");
 
 		setCategory(Category.CHAT);
 		addSetting(intervalSec);

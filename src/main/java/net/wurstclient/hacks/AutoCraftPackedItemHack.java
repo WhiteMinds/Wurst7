@@ -17,12 +17,12 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 
 @SearchTags({ "auto craftPackedItem", "AutoCraftPackedItem" })
 public final class AutoCraftPackedItemHack extends Hack {
-  public final SliderSetting packCount = new SliderSetting("pack count", "", 9, 1, 9, 1, ValueDisplay.INTEGER);
+  public final SliderSetting packCount = new SliderSetting("每次打包所需数量", "", 9, 1, 9, 1, ValueDisplay.INTEGER);
 
   public ItemStack heldItem;
 
   public AutoCraftPackedItemHack() {
-    super("AutoCraftPackedItem", "AutoCraftPackedItem");
+    super("自动合成打包物品", "手持要打包的物品，然后启用该功能，再去工作台点击 Pack 就会开始");
 
     setCategory(Category.OTHER);
     addSetting(packCount);
